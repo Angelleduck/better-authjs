@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { registerSchema } from "@/schemas";
 import { Input } from "@/components/auth/register/input";
+import { register as signUp } from "@/services/register";
 
 type InputField = z.infer<typeof registerSchema>;
 
@@ -25,13 +26,16 @@ export default function Page() {
 
   const onSubmit: SubmitHandler<InputField> = async (data) => {
     try {
-      console.log(data);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      throw new Error("email is already taken");
-    } catch (error) {
+      const res = await signUp(data);
+
+      if (res.error) {
+        setError("root", {
+          message: res.error.message,
+        });
+      }
+    } catch {
       setError("root", {
-        message:
-          error instanceof Error ? error.message : "Something went wrong",
+        message: "Sorry, something went wrong",
       });
     }
   };
@@ -43,7 +47,7 @@ export default function Page() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-1">
           <label htmlFor="name">Name</label>
-          
+
           <Input
             register={register}
             id="name"
@@ -56,7 +60,7 @@ export default function Page() {
         </div>
         <div className="space-y-1">
           <label htmlFor="email">Email</label>
-          
+
           <Input
             register={register}
             id="email"
@@ -69,7 +73,7 @@ export default function Page() {
         </div>
         <div className="space-y-1">
           <label htmlFor="password">Password</label>
-          
+
           <Input
             register={register}
             id="password"
@@ -82,7 +86,7 @@ export default function Page() {
         </div>
         <div className="space-y-1">
           <label htmlFor="confirmPassword">Confirm password</label>
-          
+
           <Input
             register={register}
             id="confirmPassword"

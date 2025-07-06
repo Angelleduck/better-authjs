@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/schemas";
 import { z } from "zod";
 import { Input } from "@/components/auth/login/input";
+import { login } from "@/services/login";
 
 type InputField = z.infer<typeof loginSchema>;
 
@@ -25,19 +26,22 @@ export default function Page() {
 
   const onSubmit: SubmitHandler<InputField> = async (data) => {
     try {
-      console.log(data);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      throw new Error("email is already taken");
-    } catch (error) {
+      const res = await login(data);
+
+      if (res.error) {
+        setError("root", {
+          message: res.error.message,
+        });
+      }
+    } catch {
       setError("root", {
-        message:
-          error instanceof Error ? error.message : "Something went wrong",
+        message: "Sorry, something went wrong",
       });
     }
   };
 
   return (
-    <div className="w-[min(calc(100%-20px),400px)] bg-white  rounded-xl px-6 py-7 space-y-5">
+    <div className="w-[min(calc(100%-20px),400px)] bg-white rounded-xl px-6 py-7 space-y-5">
       <Header label="Welcome back" />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
