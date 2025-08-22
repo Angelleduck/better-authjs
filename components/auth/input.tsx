@@ -1,18 +1,20 @@
 import { Eye, EyeClosed } from "lucide-react";
 import { useState } from "react";
-import { UseFormRegister } from "react-hook-form";
+import { UseFormRegister, FieldValues, Path } from "react-hook-form";
 
-interface InputProps {
-  register: UseFormRegister<{
-    email: string;
-    password: string;
-  }>;
-  id: "email" | "password";
-  type: "email" | "password";
+interface InputProps<T extends FieldValues> {
+  register: UseFormRegister<T>;
+  id: Path<T>;
+  type: "email" | "password" | "text";
   placeholder: string;
 }
 
-export function Input({ register, id, type, placeholder }: InputProps) {
+export function Input<T extends FieldValues>({
+  register,
+  id,
+  type,
+  placeholder,
+}: InputProps<T>) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (

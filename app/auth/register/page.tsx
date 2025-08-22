@@ -1,7 +1,6 @@
 "use client";
 
 import Header from "@/components/auth/header";
-import GitHubIcon from "@/components/icons/github-icon";
 import GoogleIcon from "@/components/icons/google-icon";
 import Link from "next/link";
 
@@ -9,12 +8,18 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { registerSchema } from "@/schemas";
-import { Input } from "@/components/auth/register/input";
-import { register as signUp } from "@/services/register";
+import { Input } from "@/components/auth/input";
+import { register as signUp } from "@/actions/register";
+import { useState } from "react";
+import SuccessCard from "@/components/auth/success-card";
+import { ErrorCard } from "@/components/auth/error-card";
+import { GithubButton } from "@/components/auth/github-button";
+import ButtonSubmit from "@/components/auth/submit-button";
 
 type InputField = z.infer<typeof registerSchema>;
 
 export default function Page() {
+  const [success, setSucess] = useState("");
   const {
     register,
     handleSubmit,
@@ -28,10 +33,12 @@ export default function Page() {
     try {
       const res = await signUp(data);
 
-      if (res.error) {
+      if (res?.error) {
         setError("root", {
-          message: res.error.message,
+          message: res.error,
         });
+      } else if (res?.success) {
+        setSucess(res.success);
       }
     } catch {
       setError("root", {
@@ -54,9 +61,7 @@ export default function Page() {
             type="text"
             placeholder="Simon Doe"
           />
-          {errors.name && (
-            <div className="text-red-500">{errors.name.message}</div>
-          )}
+          {errors.name && <ErrorCard message={errors.name.message} />}
         </div>
         <div className="space-y-1">
           <label htmlFor="email">Email</label>
@@ -67,9 +72,7 @@ export default function Page() {
             type="email"
             placeholder="jhon.doe@example"
           />
-          {errors.email && (
-            <div className="text-red-500">{errors.email.message}</div>
-          )}
+          {errors.email && <ErrorCard message={errors.email.message} />}
         </div>
         <div className="space-y-1">
           <label htmlFor="password">Password</label>
@@ -80,9 +83,7 @@ export default function Page() {
             type="password"
             placeholder="********"
           />
-          {errors.password && (
-            <div className="text-red-500">{errors.password.message}</div>
-          )}
+          {errors.password && <ErrorCard message={errors.password.message} />}
         </div>
         <div className="space-y-1">
           <label htmlFor="confirmPassword">Confirm password</label>
@@ -94,29 +95,25 @@ export default function Page() {
             placeholder="********"
           />
           {errors.confirmPassword && (
-            <div className="text-red-500">{errors.confirmPassword.message}</div>
+            <ErrorCard message={errors.confirmPassword.message} />
           )}
         </div>
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="bg-black text-white w-full text-sm rounded-md py-2 hover:bg-black/85 transition"
-        >
-          {isSubmitting ? "Creating account..." : "Create account"}
-        </button>
 
-        {errors.root && (
-          <div className="text-red-500">{errors.root.message}</div>
-        )}
+        <ButtonSubmit
+          isSubmitting={isSubmitting}
+          label="Create account"
+          loadingLabel="Creating account..."
+        />
+
+        {errors.root && <ErrorCard message={errors.root.message} />}
+        {success && <SuccessCard message={success} />}
       </form>
 
       <div className="flex gap-2">
         <button className="flex flex-1 border rounded-md items-center justify-center py-2 hover:bg-black/5 transition">
           <GoogleIcon className="h-5 w-5" />
         </button>
-        <button className="flex flex-1 border rounded-md items-center justify-center py-2 hover:bg-black/5 transition">
-          <GitHubIcon className="h-5 w-5" />
-        </button>
+        <GithubButton />
       </div>
 
       <div className="flex justify-center">

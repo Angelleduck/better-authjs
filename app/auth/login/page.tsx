@@ -1,7 +1,6 @@
 "use client";
 
 import Header from "@/components/auth/header";
-import GitHubIcon from "@/components/icons/github-icon";
 import GoogleIcon from "@/components/icons/google-icon";
 import Link from "next/link";
 
@@ -9,12 +8,19 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/schemas";
 import { z } from "zod";
-import { Input } from "@/components/auth/login/input";
-import { login } from "@/services/login";
+import { Input } from "@/components/auth/input";
+import { login } from "@/actions/login";
+import { Card } from "@/components/auth/card";
+import { useState } from "react";
+import SuccessCard from "@/components/auth/success-card";
+import { ErrorCard } from "@/components/auth/error-card";
+import { GithubButton } from "@/components/auth/github-button";
+import ButtonSubmit from "@/components/auth/submit-button";
 
 type InputField = z.infer<typeof loginSchema>;
 
 export default function Page() {
+  const [message, setMessage] = useState("");
   const {
     register,
     handleSubmit,
@@ -26,13 +32,23 @@ export default function Page() {
 
   const onSubmit: SubmitHandler<InputField> = async (data) => {
     try {
+      //reset value
+      setMessage("");
       const res = await login(data);
 
-      if (res.error) {
-        setError("root", {
-          message: res.error.message,
-        });
+      if (res?.confirmationNeeded) {
+        setMessage(res.confirmationNeeded);
+        return;
       }
+
+      if (res?.error) {
+        setError("root", {
+          message: res.error,
+        });
+        return;
+      }
+
+      window.location.href = "/home";
     } catch {
       setError("root", {
         message: "Sorry, something went wrong",
@@ -41,7 +57,7 @@ export default function Page() {
   };
 
   return (
-    <div className="w-[min(calc(100%-20px),400px)] bg-white rounded-xl px-6 py-7 space-y-5">
+    <Card>
       <Header label="Welcome back" />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -77,26 +93,22 @@ export default function Page() {
         >
           Forgot password
         </Link>
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="bg-black text-white w-full text-sm rounded-md py-2 hover:bg-black/85 transition"
-        >
-          {isSubmitting ? "Logging in..." : "Login"}
-        </button>
 
-        {errors.root && (
-          <div className="text-red-500">{errors.root.message}</div>
-        )}
+        <ButtonSubmit
+          isSubmitting={isSubmitting}
+          label="Login"
+          loadingLabel="Loggin in..."
+        />
+
+        {errors.root && <ErrorCard message={errors.root.message} />}
+        {message && <SuccessCard message={message} />}
       </form>
 
       <div className="flex gap-2">
         <button className="flex flex-1 border rounded-md items-center justify-center py-2 hover:bg-black/5 transition">
           <GoogleIcon className="h-5 w-5" />
         </button>
-        <button className="flex flex-1 border rounded-md items-center justify-center py-2 hover:bg-black/5 transition">
-          <GitHubIcon className="h-5 w-5" />
-        </button>
+        <GithubButton />
       </div>
 
       <div className="flex justify-center">
@@ -107,6 +119,6 @@ export default function Page() {
           Don&apos;t have an account?
         </Link>
       </div>
-    </div>
+    </Card>
   );
 }

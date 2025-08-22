@@ -24,4 +24,35 @@ const registerSchema = z
     }
   });
 
-export { loginSchema, registerSchema };
+const resetSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
+
+const newPasswordSchema = z
+  .object({
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    confirmPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters"),
+  })
+  .superRefine((data, ctx) => {
+    if (data.password !== data.confirmPassword) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["confirmPassword"],
+        message: "Passwords don't match",
+      });
+    }
+  });
+
+const emailSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
+
+export {
+  loginSchema,
+  registerSchema,
+  resetSchema,
+  newPasswordSchema,
+  emailSchema,
+};
