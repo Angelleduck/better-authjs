@@ -1,10 +1,10 @@
 "use client";
 
+import { verifyEmail } from "@/actions/verify-email";
 import { Card } from "@/components/auth/card";
 import { ErrorCard } from "@/components/auth/error-card";
 import Header from "@/components/auth/header";
 import SuccessCard from "@/components/auth/success-card";
-import { verifyToken } from "@/lib/token";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -23,7 +23,7 @@ export default function Page() {
         setLoading(false);
         return;
       }
-      const res = await verifyToken(token);
+      const res = await verifyEmail(token);
       setLoading(false);
       if (res?.error) {
         setError(res.error);

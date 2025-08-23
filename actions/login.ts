@@ -5,8 +5,6 @@ import { loginSchema } from "@/schemas";
 import { z } from "zod";
 import { APIError } from "better-auth/api";
 import type { ErrorCode } from "@/auth";
-import { generateToken } from "@/lib/token";
-import { sendEmailVerification } from "@/lib/email";
 
 export async function login(data: z.infer<typeof loginSchema>) {
   try {
@@ -31,13 +29,9 @@ export async function login(data: z.infer<typeof loginSchema>) {
             error: "Invalid credentials",
           };
         case "EMAIL_NOT_VERIFIED":
-          const token = await generateToken(data.email);
-          await sendEmailVerification(token);
           return {
             confirmationNeeded: "Confirmation email sent",
           };
-        default:
-          return { error: error.message };
       }
     } else if (error instanceof Error) {
       return { error: error.message };

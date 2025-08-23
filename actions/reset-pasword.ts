@@ -1,8 +1,7 @@
 "use server";
 
-import { sendResetPassword } from "@/lib/email";
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { generateToken } from "@/lib/token";
 import { resetSchema } from "@/schemas";
 import z from "zod";
 
@@ -23,14 +22,16 @@ export async function resetPassword(data: z.infer<typeof resetSchema>) {
       throw new Error("Email not found !");
     }
 
-    const token = await generateToken(data.email);
-
-    await sendResetPassword(token);
+    //doesn't throw an error when email not found
+    //so we need to check first with prisma
+    await auth.api.requestPasswordReset({
+      body: {
+        email: data.email, // required
+      },
+    });
 
     return { success: "Reset email sent" };
   } catch (error) {
-    console.log(error);
-
     if (error instanceof Error) {
       return { error: error.message };
     }

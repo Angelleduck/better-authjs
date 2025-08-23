@@ -5,8 +5,6 @@ import { registerSchema } from "@/schemas";
 import { z } from "zod";
 import { APIError } from "better-auth/api";
 import type { ErrorCode } from "@/auth";
-import { generateToken } from "@/lib/token";
-import { sendEmailVerification } from "@/lib/email";
 
 export async function register(data: z.infer<typeof registerSchema>) {
   try {
@@ -22,9 +20,6 @@ export async function register(data: z.infer<typeof registerSchema>) {
         name: data.name,
       },
     });
-
-    const token = await generateToken(data.email);
-    await sendEmailVerification(token);
 
     return { success: "Confirmation email sent" };
   } catch (error) {

@@ -5,15 +5,15 @@ import { ErrorCard } from "@/components/auth/error-card";
 import Header from "@/components/auth/header";
 import { Input } from "@/components/auth/input";
 import SuccessCard from "@/components/auth/success-card";
-import { verifyResetToken, verifyToken } from "@/lib/token";
 import { newPasswordSchema } from "@/schemas";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import z from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import ButtonSubmit from "@/components/auth/submit-button";
+import { updatePassword } from "@/actions/update-password";
 
 type InputField = z.infer<typeof newPasswordSchema>;
 
@@ -39,13 +39,14 @@ export default function Page() {
       return;
     }
 
-    const res = await verifyResetToken(token);
+    const res = await updatePassword(data, token);
 
     if (res?.error) {
       setError("root", {
         message: res.error,
       });
-      return;
+    } else if (res?.success) {
+      setSuccess(res.success);
     }
   };
   return (
@@ -53,13 +54,17 @@ export default function Page() {
       <Header label="Enter a new password" />
       <form onSubmit={handleSubmit(onsubmit)} className="space-y-4">
         <div className="space-y-1">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">New password</label>
           <Input
             register={register}
             id="password"
             placeholder="********"
             type="password"
           />
+
+          {errors.password && (
+            <div className="text-red-500">{errors.password.message}</div>
+          )}
         </div>
         <div className="space-y-1">
           <label htmlFor="confirmPassword">Confirm password</label>
@@ -69,10 +74,13 @@ export default function Page() {
             placeholder="********"
             type="password"
           />
+
+          {errors.confirmPassword && (
+            <div className="text-red-500">{errors.confirmPassword.message}</div>
+          )}
         </div>
-        {/* {loading && <p>loading</p>}
-        {error && <ErrorCard message={error} />}
-        {success && <SuccessCard message={success} />} */}
+        {errors.root && <ErrorCard message={errors.root.message} />}
+        {success && <SuccessCard message={success} />}
 
         <ButtonSubmit
           label="submit"

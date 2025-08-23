@@ -4,9 +4,8 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_KEY);
 
-export async function sendEmailVerification(token: string) {
+export async function emailVerification(token: string) {
   const link = `${process.env.BETTER_AUTH_URL}/auth/verification-token?token=${token}`;
-
   const { data, error } = await resend.emails.send({
     from: "Acme <onboarding@resend.dev>",
     to: ["delivered@resend.dev"],
@@ -18,8 +17,8 @@ export async function sendEmailVerification(token: string) {
     return console.error({ error });
   }
 }
-export async function sendResetPassword(token: string) {
-  const link = `${process.env.BETTER_AUTH_URL}/auth/reset-password?token=${token}`;
+export async function resetPasswordEmail(token: string) {
+  const link = `${process.env.BETTER_AUTH_URL}/auth/new-password?token=${token}`;
 
   const { data, error } = await resend.emails.send({
     from: "Acme <onboarding@resend.dev>",

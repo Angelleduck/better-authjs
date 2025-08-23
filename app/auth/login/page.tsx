@@ -88,7 +88,7 @@ export default function Page() {
           )}
         </div>
         <Link
-          href="#"
+          href="/auth/reset-password"
           className="text-sm hover:underline cursor-pointer inline-block"
         >
           Forgot password
