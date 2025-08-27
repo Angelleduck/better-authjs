@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { registerSchema } from "@/schemas";
-import { z } from "zod";
+import type { z } from "zod";
 import { APIError } from "better-auth/api";
 import type { ErrorCode } from "@/auth";
 
@@ -28,14 +28,9 @@ export async function register(data: z.infer<typeof registerSchema>) {
 
       switch (err) {
         case "USER_ALREADY_EXISTS":
-          return {
-            error: "Email already exists",
-          };
-
+          return { error: "Email already exists" };
         default:
-          return {
-            error: error.message,
-          };
+          return { error: "Sorry something went wrong" };
       }
     } else if (error instanceof Error) {
       return { error: error.message };

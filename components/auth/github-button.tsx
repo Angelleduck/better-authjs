@@ -8,6 +8,7 @@ export function GithubButton() {
 
   return (
     <button
+      type="button"
       onClick={githubLogin}
       className="flex flex-1 border rounded-md items-center justify-center py-2 hover:bg-black/5 transition"
     >

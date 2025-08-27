@@ -1,10 +1,10 @@
 "use server";
 
-import { auth, ErrorCode } from "@/auth";
+import { auth, type ErrorCode } from "@/auth";
 import { APIError } from "better-auth/api";
 export async function verifyEmail(token: string) {
   try {
-    const data = await auth.api.verifyEmail({
+    await auth.api.verifyEmail({
       query: {
         token,
       },
@@ -18,9 +18,10 @@ export async function verifyEmail(token: string) {
       switch (err) {
         case "INVALID_TOKEN":
           return { error: "Invalid token" };
-
         case "TOKEN_EXPIRED":
           return { error: "Token expired" };
+        default:
+          return { error: "Sorry something went wrong" };
       }
     } else if (error instanceof Error) {
       return { error: error.message };

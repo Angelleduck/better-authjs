@@ -4,9 +4,9 @@ import Header from "@/components/auth/header";
 import GoogleIcon from "@/components/icons/google-icon";
 import Link from "next/link";
 
-import { SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import type { z } from "zod";
 import { registerSchema } from "@/schemas";
 import { Input } from "@/components/auth/input";
 import { register as signUp } from "@/actions/register";
@@ -110,7 +110,10 @@ export default function Page() {
       </form>
 
       <div className="flex gap-2">
-        <button className="flex flex-1 border rounded-md items-center justify-center py-2 hover:bg-black/5 transition">
+        <button
+          type="button"
+          className="flex flex-1 border rounded-md items-center justify-center py-2 hover:bg-black/5 transition"
+        >
           <GoogleIcon className="h-5 w-5" />
         </button>
         <GithubButton />

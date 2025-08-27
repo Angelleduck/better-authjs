@@ -8,10 +8,13 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  //this prevent better tool collect info for improving
+  telemetry: { enabled: false },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
-    sendResetPassword: async ({ user, token }) => {
+    //sendResetPass has param user, use it later to go user's email
+    sendResetPassword: async ({ token }) => {
       await resetPasswordEmail(token);
     },
   },
@@ -20,7 +23,8 @@ export const auth = betterAuth({
     sendOnSignIn: true,
     sendOnSignUp: true,
     expiresIn: 3600,
-    sendVerificationEmail: async ({ user, token }) => {
+    //sendverification has param user, use it later to go user's email
+    sendVerificationEmail: async ({ token }) => {
       await emailVerification(token);
     },
   },

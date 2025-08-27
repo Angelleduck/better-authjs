@@ -1,6 +1,6 @@
 import { Eye, EyeClosed } from "lucide-react";
 import { useState } from "react";
-import { UseFormRegister, FieldValues, Path } from "react-hook-form";
+import type { UseFormRegister, FieldValues, Path } from "react-hook-form";
 
 interface InputProps<T extends FieldValues> {
   register: UseFormRegister<T>;

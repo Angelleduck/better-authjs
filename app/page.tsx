@@ -19,7 +19,10 @@ export default function Home() {
         <p className="text-lg">A simple authentication service</p>
 
         <Link className="inline-block" href="/auth/login">
-          <button className=" text-sm rounded-lg bg-white text-black py-[10px] px-8">
+          <button
+            type="button"
+            className=" text-sm rounded-lg bg-white text-black py-[10px] px-8"
+          >
             sign in
           </button>
         </Link>

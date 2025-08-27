@@ -3,7 +3,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { resetSchema } from "@/schemas";
-import z from "zod";
+import type z from "zod";
 
 export async function resetPassword(data: z.infer<typeof resetSchema>) {
   try {
@@ -26,7 +26,7 @@ export async function resetPassword(data: z.infer<typeof resetSchema>) {
     //so we need to check first with prisma
     await auth.api.requestPasswordReset({
       body: {
-        email: data.email, // required
+        email: data.email,
       },
     });
 

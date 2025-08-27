@@ -11,8 +11,8 @@ import { resetSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import z from "zod";
+import { type SubmitHandler, useForm } from "react-hook-form";
+import type z from "zod";
 
 type InputField = z.infer<typeof resetSchema>;
 

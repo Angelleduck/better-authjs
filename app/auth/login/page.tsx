@@ -4,10 +4,10 @@ import Header from "@/components/auth/header";
 import GoogleIcon from "@/components/icons/google-icon";
 import Link from "next/link";
 
-import { SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/schemas";
-import { z } from "zod";
+import type { z } from "zod";
 import { Input } from "@/components/auth/input";
 import { login } from "@/actions/login";
 import { Card } from "@/components/auth/card";
