@@ -1,5 +1,3 @@
-"user server";
-
 import { NextResponse, type NextRequest } from "next/server";
 import { authRoutes, LOGIN_REDIRECT, protectedRoutes } from "./routes";
 import { getUser } from "./actions/getUser";
